@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fitness.DataAccess\Fitness.DataAccess.csproj" />
-    <ProjectReference Include="..\Fitness.Presentation\Fitness.Presentation.csproj" />
     <ProjectReference Include="..\Services\Fitness.Services.csproj" />
   </ItemGroup>
 

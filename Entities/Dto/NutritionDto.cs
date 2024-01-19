@@ -4,6 +4,7 @@ namespace Fitness.Entities.Dto
 {
     public class NutritionDto
     {
+        public int Id { get; set; } 
         public string NutritionName { get; set; }
         public DateTime LogDate { get; set; }
         public NutritionType NutritionType { get; set; }

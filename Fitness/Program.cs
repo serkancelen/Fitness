@@ -17,7 +17,7 @@ builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddDbContext<FitnessDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddControllers();
+builder.Services.AddControllers();
 
 // Swagger/OpenAPI konfigürasyonu
 builder.Services.AddEndpointsApiExplorer();
@@ -58,18 +58,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddControllers()
-    .AddApplicationPart(typeof(Fitness.Presentation.AssemblyReferance).Assembly);
-
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fitness"));
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

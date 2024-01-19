@@ -11,5 +11,6 @@ namespace Fitness.Entities.Dto
         public DateTime EntryDate { get; set; }
         public int UserId { get; set; }
         public ExerciseType exerciseType { get; set; }
+        public int WorkoutId { get; set; }
     }
 }

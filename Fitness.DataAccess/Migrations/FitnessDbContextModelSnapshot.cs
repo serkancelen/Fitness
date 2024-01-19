@@ -53,7 +53,7 @@ namespace Fitness.DataAccess.Migrations
 
                     b.HasIndex("WorkoutId");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Exercises", (string)null);
                 });
 
             modelBuilder.Entity("Fitness.Entities.Models.FoodItem", b =>
@@ -95,7 +95,7 @@ namespace Fitness.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FoodItems");
+                    b.ToTable("FoodItems", (string)null);
                 });
 
             modelBuilder.Entity("Fitness.Entities.Models.Nutrition", b =>
@@ -126,7 +126,7 @@ namespace Fitness.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Nutritions");
+                    b.ToTable("Nutritions", (string)null);
                 });
 
             modelBuilder.Entity("Fitness.Entities.Models.ProgressLog", b =>
@@ -162,7 +162,7 @@ namespace Fitness.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ProgressLogs");
+                    b.ToTable("ProgressLogs", (string)null);
                 });
 
             modelBuilder.Entity("Fitness.Entities.Models.User", b =>
@@ -205,7 +205,7 @@ namespace Fitness.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Fitness.Entities.Models.Workout", b =>
@@ -243,7 +243,7 @@ namespace Fitness.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Workouts");
+                    b.ToTable("Workouts", (string)null);
                 });
 
             modelBuilder.Entity("Fitness.Entities.Exercise", b =>

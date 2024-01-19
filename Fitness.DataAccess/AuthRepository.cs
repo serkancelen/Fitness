@@ -63,87 +63,6 @@ namespace Fitness.DataAccess
         {
             return await _context.Users.AnyAsync(u => u.UserName == username);
         }
-        public async Task<ServiceResponse<string>> ForgotPassword(string username)
-        {
-            var response = new ServiceResponse<string>();
-            var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.UserName.ToLower().Equals(username.ToLower()));
-
-            if (user == null)
-            {
-                response.Success = false;
-                response.Message = "Kullanıcı Bulunamadı";
-                return response;
-            }
-
-            // Yeni rastgele şifre oluştur
-            string newPassword = GenerateRandomPassword();
-
-            // Şifreyi kullanıcıya atayarak veritabanında güncelle
-            CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            // Veritabanını güncelle
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-
-            // E-posta gönder
-            SendPasswordResetEmail(user, newPassword);
-
-            response.Data = "Şifre sıfırlama e-postası gönderildi.";
-            return response;
-        }
-        // Diğer metotlar...
-
-        private string GenerateRandomPassword()
-        {
-            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-            StringBuilder password = new StringBuilder();
-            Random random = new Random();
-
-            for (int i = 0; i < 10; i++)
-            {
-                password.Append(validChars[random.Next(validChars.Length)]);
-            }
-
-            return password.ToString();
-        }
-
-        private void SendPasswordResetEmail(User user, string newPassword)
-        {
-            // E-posta servisi kullanarak e-posta gönderme işlemi
-            // Bu örnek sadece bir SMTP servisi kullanımını göstermektedir.
-
-            // SMTP ayarları
-            string smtpHost = "your-smtp-host.com";
-            int smtpPort = 587;
-            string smtpUsername = "your-email@example.com";
-            string smtpPassword = "your-email-password";
-
-            // E-posta mesajı
-            MailMessage mailMessage = new MailMessage
-            {
-                From = new MailAddress(smtpUsername),
-                Subject = "Şifre Sıfırlama",
-                Body = $"Merhaba {user.UserName},\n\nYeni şifreniz: {newPassword}\n\nBu şifre ile giriş yapabilir ve ardından şifrenizi değiştirebilirsiniz.",
-                IsBodyHtml = false
-            };
-
-            mailMessage.To.Add(user.Email);
-
-            // SMTP client oluştur
-            SmtpClient smtpClient = new SmtpClient(smtpHost)
-            {
-                Port = smtpPort,
-                Credentials = new NetworkCredential(smtpUsername, smtpPassword),
-                EnableSsl = true
-            };
-
-            // E-postayı gönder
-            smtpClient.Send(mailMessage);
-        }
-
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
@@ -152,7 +71,6 @@ namespace Fitness.DataAccess
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
             }
-
         }
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {

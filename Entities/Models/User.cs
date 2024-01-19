@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using static Helpers.Enums;
+﻿using static Helpers.Enums;
 
 namespace Fitness.Entities.Models
 {

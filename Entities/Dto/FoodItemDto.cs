@@ -8,7 +8,7 @@ namespace Fitness.Entities.Dto
 {
     public class FoodItemDto
     {
-        public int Id { get; set; }
+        public int FoodItemId { get; set; }
         public string Name { get; set; }
         public decimal Calories { get; set; }
         public decimal Protein { get; set; }

@@ -6,6 +6,7 @@ namespace Fitness.Entities.Dto
 {
     public class WorkoutDto
     {
+        public int WorkoutId { get; set; }
         public int UserId { get; set; }
         public DateTime Date { get; set; }
         public List<ExerciseDto> Exercises { get; set; }

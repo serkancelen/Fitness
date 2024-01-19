@@ -127,7 +127,6 @@ namespace Fitness.Services.Services
             return serviceResponse;
         }
 
-
         public async Task<ServiceResponse<List<User>>> GetAllUsersWithProgressLogs()
         {
             var response = new ServiceResponse<List<User>>();
@@ -143,7 +142,6 @@ namespace Fitness.Services.Services
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
             }
-
         }
     }
 }
