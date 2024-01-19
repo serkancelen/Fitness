@@ -1,42 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Fitness.DataAccess;
 using Fitness.Entities;
 using Fitness.Entities.Dto;
-using Fitness.Entities.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Fitness.Services
 {
     public class ExerciseService : IExerciseService
     {
         private readonly FitnessDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
-        public ExerciseService(FitnessDbContext context)
+        public ExerciseService(FitnessDbContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
-        public async Task<ServiceResponse<List<ExerciseDto>>> GetExerciseEntriesByUserIdAsync(int userId)
+
+        public async Task<ServiceResponse<List<ExerciseDto>>> GetExerciseUserIdAsync(int userId)
         {
             var response = new ServiceResponse<List<ExerciseDto>>();
 
             try
             {
+                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                if (userId != requestingUserId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 var entries = await _context.Exercises
                     .Where(e => e.UserId == userId)
                     .ToListAsync();
 
-                response.Data = entries.Select(entry => new ExerciseDto
-                {
-                    Id = entry.Id,
-                    ExerciseName = entry.ExerciseName,
-                    DurationMinutes = entry.DurationMinutes,
-                    EntryDate = entry.EntryDate,
-                    UserId = entry.UserId
-                }).ToList();
-
+                response.Data = _mapper.Map<List<ExerciseDto>>(entries);
                 response.Success = true;
             }
             catch (Exception ex)
@@ -46,19 +50,23 @@ namespace Fitness.Services
 
             return response;
         }
-        public async Task<ServiceResponse<string>> CreateExerciseEntryAsync(ExerciseDto exerciseDto)
+
+        public async Task<ServiceResponse<string>> CreateExerciseAsync(ExerciseDto exerciseDto)
         {
             var response = new ServiceResponse<string>();
 
             try
             {
-                var exerciseEntry = new Exercise
+                var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                if (exerciseDto.UserId != userId)
                 {
-                    ExerciseName = exerciseDto.ExerciseName,
-                    DurationMinutes = exerciseDto.DurationMinutes,
-                    EntryDate = exerciseDto.EntryDate,
-                    UserId = exerciseDto.UserId
-                };
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
+                var exerciseEntry = _mapper.Map<Exercise>(exerciseDto);
 
                 await _context.Exercises.AddAsync(exerciseEntry);
                 await _context.SaveChangesAsync();
@@ -72,7 +80,8 @@ namespace Fitness.Services
 
             return response;
         }
-        public async Task<ServiceResponse<string>> UpdateExerciseEntryAsync(int id, ExerciseDto exerciseDto)
+
+        public async Task<ServiceResponse<string>> UpdateExerciseAsync(int id, ExerciseDto exerciseDto)
         {
             var response = new ServiceResponse<string>();
 
@@ -86,10 +95,15 @@ namespace Fitness.Services
                     return response;
                 }
 
-                // Güncelleme işlemleri
-                existingEntry.ExerciseName = exerciseDto.ExerciseName;
-                existingEntry.DurationMinutes = exerciseDto.DurationMinutes;
-                existingEntry.EntryDate = exerciseDto.EntryDate;
+                var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (existingEntry.UserId != userId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
+                _mapper.Map(exerciseDto, existingEntry);
 
                 _context.Exercises.Update(existingEntry);
                 await _context.SaveChangesAsync();
@@ -104,7 +118,8 @@ namespace Fitness.Services
 
             return response;
         }
-        public async Task<ServiceResponse<string>> DeleteExerciseEntryAsync(int id)
+
+        public async Task<ServiceResponse<string>> DeleteExerciseAsync(int id)
         {
             var response = new ServiceResponse<string>();
 
@@ -115,6 +130,14 @@ namespace Fitness.Services
                 if (existingEntry == null)
                 {
                     response.Message = "Belirtilen egzersiz girişi bulunamadı.";
+                    return response;
+                }
+
+                var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (existingEntry.UserId != userId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
                     return response;
                 }
 

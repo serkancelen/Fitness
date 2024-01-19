@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Fitness.Entities;
 using Fitness.Entities.Dto;
-using Fitness.Entities.Dto.UserDto;
 using Fitness.Entities.Models;
 
 namespace Fitness.Services
@@ -10,7 +9,6 @@ namespace Fitness.Services
     {
         public AutoMapperProfile()
         {
-            CreateMap<AddUserDto, User>();
             CreateMap<User, GetUserDto>().ReverseMap();
             CreateMap<NutritionDto, Nutrition>().ReverseMap();
             CreateMap<ProgressLogDto, ProgressLog>();

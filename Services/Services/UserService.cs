@@ -2,9 +2,9 @@
 using Fitness.DataAccess;
 using Fitness.Entities;
 using Fitness.Entities.Dto;
-using Fitness.Entities.Dto.UserDto;
 using Fitness.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fitness.Services.Services
@@ -13,12 +13,15 @@ namespace Fitness.Services.Services
     {
         private readonly IMapper _mapper;
         private readonly FitnessDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IMapper mapper, FitnessDbContext context)
+        public UserService(IMapper mapper, FitnessDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
+
         public async Task<ServiceResponse<List<GetUserDto>>> DeleteUser(int id)
         {
             ServiceResponse<List<GetUserDto>> response = new ServiceResponse<List<GetUserDto>>();
@@ -101,7 +104,6 @@ namespace Fitness.Services.Services
                         user.PasswordSalt = passwordSalt;
                     }
 
-                    // Diğer bilgilerin güncellenmesi
                     user.FullName = updatedUser.FullName;
                     user.Birthdate = updatedUser.Birthdate;
                     user.UserName = updatedUser.Username;

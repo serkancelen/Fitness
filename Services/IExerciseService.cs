@@ -7,9 +7,9 @@ namespace Fitness.Services
 {
     public interface IExerciseService
     {
-        Task<ServiceResponse<List<ExerciseDto>>> GetExerciseEntriesByUserIdAsync(int userId);
-        Task<ServiceResponse<string>> CreateExerciseEntryAsync(ExerciseDto exerciseDto);
-        Task<ServiceResponse<string>> UpdateExerciseEntryAsync(int id, ExerciseDto exerciseDto);
-        Task<ServiceResponse<string>> DeleteExerciseEntryAsync(int id);
+        Task<ServiceResponse<List<ExerciseDto>>> GetExerciseUserIdAsync(int userId);
+        Task<ServiceResponse<string>> CreateExerciseAsync(ExerciseDto exerciseDto);
+        Task<ServiceResponse<string>> UpdateExerciseAsync(int id, ExerciseDto exerciseDto);
+        Task<ServiceResponse<string>> DeleteExerciseAsync(int id);
     }
 }

@@ -13,12 +13,17 @@ namespace Fitness.Services.Services
     {
         private readonly FitnessDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public WorkoutService(FitnessDbContext context, IMapper mapper)
+        public WorkoutService(FitnessDbContext context, IMapper mapper,IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
+            .FindFirstValue(ClaimTypes.NameIdentifier));
+
 
         public async Task<ServiceResponse<WorkoutDto>> CreateWorkoutAsync(WorkoutDto workoutDto)
         {
@@ -26,9 +31,9 @@ namespace Fitness.Services.Services
 
             try
             {
+                var userId = GetUserId();
                 var workout = _mapper.Map<Workout>(workoutDto);
 
-                // Eğer kullanıcı varsa onun ID'sini ata, yoksa hata döndür
                 var user = await _context.Users.FindAsync(workoutDto.UserId);
                 if (user == null)
                 {
@@ -37,13 +42,19 @@ namespace Fitness.Services.Services
                     return response;
                 }
 
+                if (workoutDto.UserId != userId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 workout.User = user;
 
-                // Workout'un içindeki Exercises'i yaratılan Workout ile ilişkilendir
                 workout.Exercises = workoutDto.Exercises?.Select(exerciseDto =>
                 {
                     var exercise = _mapper.Map<Exercise>(exerciseDto);
-                    exercise.UserId = workoutDto.UserId; // UserId'yi atama işlemi
+                    exercise.UserId = workoutDto.UserId; 
                     return exercise;
                 }).ToList() ?? new List<Exercise>();
 
@@ -76,6 +87,13 @@ namespace Fitness.Services.Services
                 {
                     response.Success = false;
                     response.Message = "Antrenman bulunamadı.";
+                    return response;
+                }
+
+                if (existingWorkout.UserId != GetUserId())
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
                     return response;
                 }
 
@@ -124,9 +142,8 @@ namespace Fitness.Services.Services
 
             try
             {
-                // Workout kaydını bul
                 var workout = await _context.Workouts
-                    .Include(w => w.Exercises) // İlgili Workout'un Exercises ilişkisini dahil et
+                    .Include(w => w.Exercises) 
                     .FirstOrDefaultAsync(w => w.WorkoutId == id);
 
                 if (workout == null)
@@ -136,10 +153,15 @@ namespace Fitness.Services.Services
                     return response;
                 }
 
-                // Workout'a ait Exercises kayıtlarını sil
+                if (workout.UserId != GetUserId())
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 _context.Exercises.RemoveRange(workout.Exercises);
 
-                // Workout kaydını sil
                 _context.Workouts.Remove(workout);
 
                 await _context.SaveChangesAsync();
@@ -185,7 +207,6 @@ namespace Fitness.Services.Services
 
             try
             {
-                // Kullanıcının sadece kendi antrenmanlarını görmesini sağla
                 if (userId != int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value))
                 {
                     response.Success = false;

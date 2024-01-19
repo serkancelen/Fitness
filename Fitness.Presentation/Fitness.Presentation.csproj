@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Entities\Fitness.Entities.csproj" />
+    <ProjectReference Include="..\Fitness.DataAccess\Fitness.DataAccess.csproj" />
+    <ProjectReference Include="..\Services\Fitness.Services.csproj" />
+  </ItemGroup>
+
+</Project>

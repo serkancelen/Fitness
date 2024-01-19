@@ -5,6 +5,7 @@ using Fitness.Entities.Dto;
 using Fitness.Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Fitness.Services.Services
 {
@@ -18,7 +19,7 @@ namespace Fitness.Services.Services
         {
             _context = context;
             _mapper = mapper;
-            httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<List<ProgressLogDto>>> GetProgressLogsByUserId(int userId)
@@ -26,6 +27,15 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<List<ProgressLogDto>>();
             try
             {
+                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                if (userId != requestingUserId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 var progressLogs = await _context.ProgressLogs
                     .Where(pl => pl.UserId == userId)
                     .ToListAsync();
@@ -46,6 +56,15 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<string>();
             try
             {
+                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                if (userId != requestingUserId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                 {
@@ -75,6 +94,15 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<string>();
             try
             {
+                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                if (userId != requestingUserId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                 {
@@ -110,6 +138,15 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<string>();
             try
             {
+                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+                if (userId != requestingUserId)
+                {
+                    response.Success = false;
+                    response.Message = "Bu işlem için yetkiniz yok.";
+                    return response;
+                }
+
                 var user = await _context.Users.FindAsync(userId);
                 if (user == null)
                 {
