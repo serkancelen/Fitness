@@ -20,6 +20,8 @@ namespace Fitness.Services
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
         }
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
+            .FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<List<ExerciseDto>>> GetExerciseUserIdAsync(int userId)
         {
@@ -27,7 +29,7 @@ namespace Fitness.Services
 
             try
             {
-                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var requestingUserId = GetUserId();
 
                 if (userId != requestingUserId)
                 {
@@ -57,7 +59,7 @@ namespace Fitness.Services
 
             try
             {
-                var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var userId = GetUserId();
 
                 if (exerciseDto.UserId != userId)
                 {
@@ -70,7 +72,7 @@ namespace Fitness.Services
 
                 await _context.Exercises.AddAsync(exerciseEntry);
                 await _context.SaveChangesAsync();
-                response.Data = exerciseEntry.Id.ToString();
+                response.Data = exerciseEntry.Id.ToString() + "Egzersiz Kaydı Başarıyla Oluşturuldu";
                 response.Success = true;
             }
             catch (Exception ex)
@@ -108,7 +110,7 @@ namespace Fitness.Services
                 _context.Exercises.Update(existingEntry);
                 await _context.SaveChangesAsync();
 
-                response.Data = id.ToString();
+                response.Data = "Belirtilen Egzersiz Güncellendi" + id.ToString();
                 response.Success = true;
             }
             catch (Exception ex)
@@ -133,7 +135,7 @@ namespace Fitness.Services
                     return response;
                 }
 
-                var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var userId = GetUserId();
                 if (existingEntry.UserId != userId)
                 {
                     response.Success = false;
@@ -144,7 +146,7 @@ namespace Fitness.Services
                 _context.Exercises.Remove(existingEntry);
                 await _context.SaveChangesAsync();
 
-                response.Data = id.ToString();
+                response.Data = id.ToString() + "Belirtilen egzersiz Başarıyla Silindi";
                 response.Success = true;
             }
             catch (Exception ex)

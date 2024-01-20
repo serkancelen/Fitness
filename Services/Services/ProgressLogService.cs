@@ -21,15 +21,17 @@ namespace Fitness.Services.Services
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
+            .FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<List<ProgressLogDto>>> GetProgressLogsByUserId(int userId)
         {
             var response = new ServiceResponse<List<ProgressLogDto>>();
             try
             {
-                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+               
 
-                if (userId != requestingUserId)
+                if (userId != int.Parse(U)
                 {
                     response.Success = false;
                     response.Message = "Bu işlem için yetkiniz yok.";

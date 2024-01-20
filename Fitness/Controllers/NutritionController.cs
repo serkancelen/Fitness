@@ -20,51 +20,51 @@ namespace Fitness.Controllers
         [HttpGet("get/{userId}")]
         public async Task<IActionResult> GetNutritionEntries(int userId)
         {
-            var entries = await _nutritionService.GetNutritionByUserIdAsync(userId);
-            if (entries == null)
+            var response = await _nutritionService.GetNutritionByUserIdAsync(userId);
+            if (response.Success)
             {
-                return NotFound("Beslenme kaydı bulunamadı.");
+                return Ok(response.Data);
             }
-            return Ok(entries);
+            return BadRequest(response.Message);
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateNutritionEntry([FromBody] NutritionDto nutritionEntryDto)
         {
-            var result = await _nutritionService.CreateNutritionAsync(nutritionEntryDto);
+            var response = await _nutritionService.CreateNutritionAsync(nutritionEntryDto);
 
-            if (result.Success)
+            if (response.Success)
             {
-                return Ok("Beslenme kaydı başarıyla oluşturuldu.");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Beslenme kaydı oluşturulurken bir hata oluştu.");
+            return BadRequest(response.Message);
         }
 
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateNutritionEntry(int id, [FromBody] NutritionDto nutritionEntryDto)
         {
-            var result = await _nutritionService.UpdateNutritionAsync(id, nutritionEntryDto);
+            var response = await _nutritionService.UpdateNutritionAsync(id, nutritionEntryDto);
 
-            if (result.Success)
+            if (response.Success)
             {
-                return Ok("Beslenme kaydı başarıyla güncellendi.");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Beslenme kaydı güncellenirken bir hata oluştu.");
+            return BadRequest(response.Message);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteNutritionEntry(int id)
         {
-            var result = await _nutritionService.DeleteNutritionAsync(id);
+            var response = await _nutritionService.DeleteNutritionAsync(id);
 
-            if (result.Success)
+            if (response.Success)
             {
-                return Ok("Beslenme kaydı başarıyla silindi.");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Beslenme kaydı silinirken bir hata oluştu.");
+            return BadRequest(response.Message);
         }
     }
 }

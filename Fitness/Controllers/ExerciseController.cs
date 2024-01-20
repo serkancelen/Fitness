@@ -20,51 +20,51 @@ namespace Fitness.Controllers
         [HttpGet("get/{userId}")]
         public async Task<IActionResult> GetExerciseEntries(int userId)
         {
-            var entries = await _exerciseService.GetExerciseUserIdAsync(userId);
-            if (entries == null)
+            var response = await _exerciseService.GetExerciseUserIdAsync(userId);
+            if (response.Success)
             {
-                return NotFound("Antrenman kaydı bulunamadı.");
+                return Ok(response.Data);
             }
-            return Ok(entries);
+            return BadRequest(response.Message);
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateExerciseEntry([FromBody] ExerciseDto exerciseEntryDto)
         {
-            var result = await _exerciseService.CreateExerciseAsync(exerciseEntryDto);
+            var response = await _exerciseService.CreateExerciseAsync(exerciseEntryDto);
 
-            if (result.Success)
+            if (response.Success)
             {
-                return Ok("Antrenman kaydı başarıyla oluşturuldu.");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Antrenman kaydı oluşturulurken bir hata oluştu.");
+            return BadRequest(response.Message);
         }
 
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateExerciseEntry(int id, [FromBody] ExerciseDto exerciseEntryDto)
         {
-            var result = await _exerciseService.UpdateExerciseAsync(id, exerciseEntryDto);
+            var response = await _exerciseService.UpdateExerciseAsync(id, exerciseEntryDto);
 
-            if (result.Success)
+            if (response.Success)
             {
-                return Ok("Antrenman kaydı başarıyla güncellendi.");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Antrenman kaydı güncellenirken bir hata oluştu.");
+            return BadRequest(response.Message);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteExerciseEntry(int id)
         {
-            var result = await _exerciseService.DeleteExerciseAsync(id);
+            var response = await _exerciseService.DeleteExerciseAsync(id);
 
-            if (result.Success)
+            if (response.Success)
             {
-                return Ok("Antrenman kaydı başarıyla silindi.");
+                return Ok(response.Data);
             }
 
-            return BadRequest("Antrenman kaydı silinirken bir hata oluştu.");
+            return BadRequest(response.Message);
         }
     }
 }

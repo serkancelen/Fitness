@@ -21,25 +21,45 @@ namespace Fitness.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<ServiceResponse<List<ProgressLogDto>>>> GetProgressLogsByUserId(int userId)
         {
-            return Ok(await _progressLogService.GetProgressLogsByUserId(userId));
+            var response = await _progressLogService.GetProgressLogsByUserId(userId);
+            if (response.Success)
+            {
+                return Ok (response.Data);
+            }
+            return BadRequest(response.Message);
         }
 
         [HttpPost("user/{userId}")]
         public async Task<ActionResult<ServiceResponse<string>>> AddProgressLogByUserId(int userId, ProgressLogDto newProgressLog)
         {
-            return Ok(await _progressLogService.AddProgressLogByUserId(userId, newProgressLog));
+            var response = await _progressLogService.AddProgressLogByUserId(userId, newProgressLog);
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response.Message);
         }
 
         [HttpPut("user/{userId}")]
         public async Task<ActionResult<ServiceResponse<string>>> UpdateProgressLogByUserId(int userId, ProgressLogDto updatedProgressLog)
         {
-            return Ok(await _progressLogService.UpdateProgressLogByUserId(userId, updatedProgressLog));
+            var response = await _progressLogService.UpdateProgressLogByUserId(userId, updatedProgressLog);
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response.Message);
         }
 
         [HttpDelete("user/{userId}/{progressLogId}")]
         public async Task<ActionResult<ServiceResponse<string>>> DeleteProgressLogByUserId(int userId, int progressLogId)
         {
-            return Ok(await _progressLogService.DeleteProgressLogByUserId(userId, progressLogId));
+            var response = await _progressLogService.DeleteProgressLogByUserId(userId, progressLogId);
+            if (response.Success)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response.Message);
         }
     }
 }

@@ -20,6 +20,8 @@ public class FoodItemService : IFoodItemService
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
     }
+    private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
+           .FindFirstValue(ClaimTypes.NameIdentifier));
 
     public async Task<ServiceResponse<List<FoodItemDto>>> GetFoodItemsByUserIdAsync(int userId)
     {
@@ -27,7 +29,7 @@ public class FoodItemService : IFoodItemService
 
         try
         {
-            var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var requestingUserId = GetUserId();
 
             if (userId != requestingUserId)
             {
@@ -57,7 +59,7 @@ public class FoodItemService : IFoodItemService
 
         try
         {
-            var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = GetUserId();
 
             if (foodItemDto.UserId != userId)
             {
@@ -69,7 +71,7 @@ public class FoodItemService : IFoodItemService
             var foodItem = _mapper.Map<FoodItem>(foodItemDto);
             await _context.FoodItems.AddAsync(foodItem);
             await _context.SaveChangesAsync();
-            response.Data = foodItem.FoodItemId.ToString();
+            response.Data = foodItem.FoodItemId.ToString() + "Besin Kaydı Başarıyla Oluşturuldu";
             response.Success = true;
         }
         catch (Exception ex)
@@ -95,7 +97,7 @@ public class FoodItemService : IFoodItemService
                 return response;
             }
 
-            var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = GetUserId();
             if (existingFoodItem.UserId != userId)
             {
                 response.Success = false;
@@ -133,7 +135,7 @@ public class FoodItemService : IFoodItemService
                 return response;
             }
 
-            var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = GetUserId();
             if (existingFoodItem.UserId != userId)
             {
                 response.Success = false;
@@ -144,7 +146,7 @@ public class FoodItemService : IFoodItemService
             _context.FoodItems.Remove(existingFoodItem);
             await _context.SaveChangesAsync();
 
-            response.Data = id.ToString();
+            response.Data = id.ToString() + "Belirtilen Besin Başarıyla Silindi";
             response.Success = true;
         }
         catch (Exception ex)
