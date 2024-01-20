@@ -1,5 +1,8 @@
 # Fitness
 
+## The Project Description
+The Fitness Tracker Project is designed to help individuals manage their nutrition and workout routines, while also tracking their progress over time.
+
 ## Install Tools
 - Visual Studio 2022
 - SQL Server 2019
