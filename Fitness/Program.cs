@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,11 @@ builder.Services.AddSwaggerGen(x =>
     });
     x.OperationFilter<SecurityRequirementsOperationFilter>();
 });
-builder.Services.AddMemoryCache();
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("logs/myBeautifulLog-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 // AutoMapper konfigürasyonu
 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(AutoMapperProfile).Assembly);

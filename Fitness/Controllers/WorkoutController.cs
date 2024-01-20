@@ -2,77 +2,88 @@
 using Fitness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
-
-namespace Fitness.Controllers
+[Authorize]
+[Route("api/[controller]")]
+[ApiController]
+public class WorkoutController : ControllerBase
 {
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class WorkoutController : ControllerBase
+    private readonly IWorkoutService _workoutService;
+
+    public WorkoutController(IWorkoutService workoutService)
     {
-        private readonly IWorkoutService _workoutService;
+        _workoutService = workoutService;
+    }
 
-        public WorkoutController(IWorkoutService workoutService)
+    [HttpGet]
+    public async Task<IActionResult> GetAllWorkouts()
+    {
+        var response = await _workoutService.GetAllWorkoutsAsync(HttpContext.User);
+        if (response.Success)
         {
-            _workoutService = workoutService;
+            return Ok(response.Data);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllWorkouts()
+        Log.Information($"GetAllWorkouts failed: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetAllWorkoutsByUserId(int userId)
+    {
+        var response = await _workoutService.GetAllWorkoutsByUserIdAsync(userId, HttpContext.User);
+
+        if (response.Success)
         {
-            var response = await _workoutService.GetAllWorkoutsAsync(HttpContext.User);
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetAllWorkoutsByUserId(int userId)
+        Log.Information($"GetAllWorkoutsByUserId failed for UserId {userId}: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateWorkout(WorkoutDto workoutDto)
+    {
+        var response = await _workoutService.CreateWorkoutAsync(workoutDto);
+        if (response.Success)
         {
-            var response = await _workoutService.GetAllWorkoutsByUserIdAsync(userId, HttpContext.User);
- 
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        
-        [HttpPost]
-        public async Task<IActionResult> CreateWorkout(WorkoutDto workoutDto)
+        Log.Information($"CreateWorkout failed: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateWorkout(int id, WorkoutDto workoutDto)
+    {
+        var response = await _workoutService.UpdateWorkoutAsync(id, workoutDto);
+        if (response.Success)
         {
-            var response = await _workoutService.CreateWorkoutAsync(workoutDto);
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateWorkout(int id, WorkoutDto workoutDto)
+        Log.Information($"UpdateWorkout failed for WorkoutId {id}: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteWorkout(int id)
+    {
+        var response = await _workoutService.DeleteWorkoutAsync(id);
+        if (response.Success)
         {
-            var response = await _workoutService.UpdateWorkoutAsync(id, workoutDto);
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Message);
+            return Ok(response.Message);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWorkout(int id)
-        {
-            var response = await _workoutService.DeleteWorkoutAsync(id);
-            if (response.Success)
-            {
-                return Ok(response.Message);
-            }
-            return BadRequest(response.Message);
-        }
+        Log.Information($"DeleteWorkout failed for WorkoutId {id}: {response.Message}");
+
+        return BadRequest(response.Message);
     }
 }

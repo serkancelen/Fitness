@@ -2,69 +2,76 @@
 using Fitness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
-namespace Fitness.Controllers
+[Authorize]
+[Route("api/nutrition")]
+[ApiController]
+public class NutritionController : ControllerBase
 {
-    [Authorize]
-    [Route("api/nutrition")]
-    [ApiController]
-    public class NutritionController : ControllerBase
+    private readonly INutritionService _nutritionService;
+
+    public NutritionController(INutritionService nutritionService)
     {
-        private readonly INutritionService _nutritionService;
+        _nutritionService = nutritionService;
+    }
 
-        public NutritionController(INutritionService nutritionService)
+    [HttpGet("get/{userId}")]
+    public async Task<IActionResult> GetNutritionEntries(int userId)
+    {
+        var response = await _nutritionService.GetNutritionByUserIdAsync(userId);
+        if (response.Success)
         {
-            _nutritionService = nutritionService;
+            return Ok(response.Data);
         }
 
-        [HttpGet("get/{userId}")]
-        public async Task<IActionResult> GetNutritionEntries(int userId)
+        Log.Information($"GetNutritionEntries failed for UserId {userId}: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateNutritionEntry([FromBody] NutritionDto nutritionEntryDto)
+    {
+        var response = await _nutritionService.CreateNutritionAsync(nutritionEntryDto);
+
+        if (response.Success)
         {
-            var response = await _nutritionService.GetNutritionByUserIdAsync(userId);
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateNutritionEntry([FromBody] NutritionDto nutritionEntryDto)
+        Log.Information($"CreateNutritionEntry failed: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateNutritionEntry(int id, [FromBody] NutritionDto nutritionEntryDto)
+    {
+        var response = await _nutritionService.UpdateNutritionAsync(id, nutritionEntryDto);
+
+        if (response.Success)
         {
-            var response = await _nutritionService.CreateNutritionAsync(nutritionEntryDto);
-
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateNutritionEntry(int id, [FromBody] NutritionDto nutritionEntryDto)
+        Log.Information($"UpdateNutritionEntry failed for NutritionId {id}: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteNutritionEntry(int id)
+    {
+        var response = await _nutritionService.DeleteNutritionAsync(id);
+
+        if (response.Success)
         {
-            var response = await _nutritionService.UpdateNutritionAsync(id, nutritionEntryDto);
-
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteNutritionEntry(int id)
-        {
-            var response = await _nutritionService.DeleteNutritionAsync(id);
+        Log.Information($"DeleteNutritionEntry failed for NutritionId {id}: {response.Message}");
 
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-
-            return BadRequest(response.Message);
-        }
+        return BadRequest(response.Message);
     }
 }

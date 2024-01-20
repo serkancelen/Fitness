@@ -3,6 +3,7 @@ using Fitness.Entities.Dto;
 using Fitness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Fitness.Presentation.Controllers
 {
@@ -21,6 +22,7 @@ namespace Fitness.Presentation.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers()
         {
+            Log.Information("GetAllUsers method called.");
             return Ok(await _userService.GetAllUser());
         }
 
@@ -32,6 +34,8 @@ namespace Fitness.Presentation.Controllers
             {
                 return NotFound(response);
             }
+            Log.Information($"GetUserById method called with id: {id}");
+
             return Ok(response);
         }
 
@@ -43,6 +47,8 @@ namespace Fitness.Presentation.Controllers
             {
                 return NotFound(response);
             }
+            Log.Information($"UpdateUser method called for user id: {updatedUser.Id}");
+
             return Ok(response);
         }
 
@@ -55,6 +61,8 @@ namespace Fitness.Presentation.Controllers
             {
                 return NotFound(response);
             }
+            Log.Information($"DeleteUser method called for user id: {id}");
+
             return Ok(response);
         }
     }

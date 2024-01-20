@@ -2,69 +2,77 @@
 using Fitness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
-namespace Fitness.Controllers
+[Authorize]
+[Route("api/exercise")]
+[ApiController]
+public class ExerciseController : ControllerBase
 {
-    [Authorize]
-    [Route("api/exercise")]
-    [ApiController]
-    public class ExerciseController : ControllerBase
+    private readonly IExerciseService _exerciseService;
+
+    public ExerciseController(IExerciseService exerciseService)
     {
-        private readonly IExerciseService _exerciseService;
+        _exerciseService = exerciseService;
+    }
 
-        public ExerciseController(IExerciseService exerciseService)
+    [HttpGet("get/{userId}")]
+    public async Task<IActionResult> GetExerciseEntries(int userId)
+    {
+        var response = await _exerciseService.GetExerciseUserIdAsync(userId);
+
+        if (response.Success)
         {
-            _exerciseService = exerciseService;
+            return Ok(response.Data);
         }
 
-        [HttpGet("get/{userId}")]
-        public async Task<IActionResult> GetExerciseEntries(int userId)
+        Log.Information($"GetExerciseEntries failed for UserId {userId}: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateExerciseEntry([FromBody] ExerciseDto exerciseEntryDto)
+    {
+        var response = await _exerciseService.CreateExerciseAsync(exerciseEntryDto);
+
+        if (response.Success)
         {
-            var response = await _exerciseService.GetExerciseUserIdAsync(userId);
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateExerciseEntry([FromBody] ExerciseDto exerciseEntryDto)
+        Log.Information($"CreateExerciseEntry failed: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateExerciseEntry(int id, [FromBody] ExerciseDto exerciseEntryDto)
+    {
+        var response = await _exerciseService.UpdateExerciseAsync(id, exerciseEntryDto);
+
+        if (response.Success)
         {
-            var response = await _exerciseService.CreateExerciseAsync(exerciseEntryDto);
-
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateExerciseEntry(int id, [FromBody] ExerciseDto exerciseEntryDto)
+        Log.Information($"UpdateExerciseEntry failed for ExerciseId {id}: {response.Message}");
+
+        return BadRequest(response.Message);
+    }
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteExerciseEntry(int id)
+    {
+        var response = await _exerciseService.DeleteExerciseAsync(id);
+
+        if (response.Success)
         {
-            var response = await _exerciseService.UpdateExerciseAsync(id, exerciseEntryDto);
-
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-
-            return BadRequest(response.Message);
+            return Ok(response.Data);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteExerciseEntry(int id)
-        {
-            var response = await _exerciseService.DeleteExerciseAsync(id);
+        Log.Information($"DeleteExerciseEntry failed for ExerciseId {id}: {response.Message}");
 
-            if (response.Success)
-            {
-                return Ok(response.Data);
-            }
-
-            return BadRequest(response.Message);
-        }
+        return BadRequest(response.Message);
     }
 }
