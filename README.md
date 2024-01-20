@@ -3,7 +3,7 @@
 ## Install Tools
 - Visual Studio 2022
 - SQL Server 2019
-- 
+
 ## Technologies Used
 
 - Asp.Net Core 7.0
