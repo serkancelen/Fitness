@@ -1,11 +1,11 @@
 # Fitness
 ***
-Technologies Used;
+***Technologies Used***
 
 Asp.Net Core 7.0 
 Entity Framework Core 7.0
 ***
-Project Structure;
+***Project Structure***
 
 Fitness
 Fitness.DataAccess
@@ -13,7 +13,7 @@ Fitness.Entities
 Fitness.Services
 Helpers
 ***
-NuGet Packages which are used in Project;
+***NuGet Packages which are used in Project***
 
 AutoMapper(12.0.1)
 AutoMapper.Extensions.Microsoft.DependencyInjection (12.0.1)
