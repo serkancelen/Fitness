@@ -31,3 +31,9 @@ The Fitness Tracker Project is designed to help individuals manage their nutriti
 - Microsoft.EntityFrameworkCore.Tools (7.0.14)
 - Swashbuckle.AspNetCore (6.5.0)
 - Swashbuckle.AspNetCore.Filters (7.0.12)
+
+## Contact
+For any questions, suggestions, or feedback related to the Fitness Tracker Project, feel free to contact us:
+-Project Owner: [Serkan Çelen]
+-Email: [serkancelen@outlook.com.tr]
+Stay fit and healthy with the Fitness Tracker Project!
