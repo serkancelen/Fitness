@@ -34,6 +34,8 @@ The Fitness Tracker Project is designed to help individuals manage their nutriti
 
 ## Contact
 For any questions, suggestions, or feedback related to the Fitness Tracker Project, feel free to contact us:
--Project Owner: [Serkan Çelen]
--Email: [serkancelen@outlook.com.tr]
+
+- Serkan Çelen
+- serkancelen@outlook.com.tr
+  
 Stay fit and healthy with the Fitness Tracker Project!
