@@ -60,7 +60,7 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<string>();
             try
             {
-                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var requestingUserId = GetUserId() ;
 
                 if (userId != requestingUserId)
                 {
@@ -98,7 +98,7 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<string>();
             try
             {
-                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var requestingUserId = GetUserId();
 
                 if (userId != requestingUserId)
                 {
@@ -142,7 +142,7 @@ namespace Fitness.Services.Services
             var response = new ServiceResponse<string>();
             try
             {
-                var requestingUserId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var requestingUserId = GetUserId();
 
                 if (userId != requestingUserId)
                 {
