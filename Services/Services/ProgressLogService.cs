@@ -22,16 +22,16 @@ namespace Fitness.Services.Services
             _httpContextAccessor = httpContextAccessor;
         }
         private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
-            .FindFirstValue(ClaimTypes.NameIdentifier));
+     .FindFirstValue(ClaimTypes.NameIdentifier));
 
         public async Task<ServiceResponse<List<ProgressLogDto>>> GetProgressLogsByUserId(int userId)
         {
             var response = new ServiceResponse<List<ProgressLogDto>>();
             try
             {
-               
+                int requestingUserId = GetUserId();
 
-                if (userId != int.Parse(U)
+                if (userId != requestingUserId)
                 {
                     response.Success = false;
                     response.Message = "Bu işlem için yetkiniz yok.";
@@ -44,6 +44,7 @@ namespace Fitness.Services.Services
 
                 var progressLogsDto = _mapper.Map<List<ProgressLogDto>>(progressLogs);
                 response.Data = progressLogsDto;
+                response.Success = true;
             }
             catch (Exception ex)
             {
@@ -52,6 +53,7 @@ namespace Fitness.Services.Services
             }
             return response;
         }
+
 
         public async Task<ServiceResponse<string>> AddProgressLogByUserId(int userId, ProgressLogDto newProgressLog)
         {
