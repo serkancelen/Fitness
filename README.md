@@ -1,27 +1,26 @@
 # Fitness
-***
-***Technologies Used***
 
-Asp.Net Core 7.0 
-Entity Framework Core 7.0
-***
-***Project Structure***
+## Technologies Used
 
-Fitness
-Fitness.DataAccess
-Fitness.Entities
-Fitness.Services
-Helpers
-***
-***NuGet Packages which are used in Project***
+- Asp.Net Core 7.0
+- Entity Framework Core 7.0
 
-AutoMapper(12.0.1)
-AutoMapper.Extensions.Microsoft.DependencyInjection (12.0.1)
-Microsoft.AspNetCore.Authentication.JwtBearer (7.0.14)
-Microsoft.AspNetCore.OpenApi (7.0.5)
-Microsoft.EntityFrameworkCore.Design (7.0.14)
-Microsoft.EntityFrameworkCore.SqlServer (7.0.14)
-Microsoft.EntityFrameworkCore.Tools (7.0.14)
-Swashbuckle.AspNetCore (6.5.0)
-Swashbuckle.AspNetCore.Filters(7.0.12)
-***
+## Project Structure
+
+- Fitness
+- Fitness.DataAccess
+- Fitness.Entities
+- Fitness.Services
+- Helpers
+
+## NuGet Packages
+
+- AutoMapper (12.0.1)
+- AutoMapper.Extensions.Microsoft.DependencyInjection (12.0.1)
+- Microsoft.AspNetCore.Authentication.JwtBearer (7.0.14)
+- Microsoft.AspNetCore.OpenApi (7.0.5)
+- Microsoft.EntityFrameworkCore.Design (7.0.14)
+- Microsoft.EntityFrameworkCore.SqlServer (7.0.14)
+- Microsoft.EntityFrameworkCore.Tools (7.0.14)
+- Swashbuckle.AspNetCore (6.5.0)
+- Swashbuckle.AspNetCore.Filters (7.0.12)
