@@ -18,7 +18,9 @@ builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddDbContext<FitnessDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(Fitness.Presentation.AssemblyReferance).Assembly);
+
 
 // Swagger/OpenAPI konfigürasyonu
 builder.Services.AddEndpointsApiExplorer();

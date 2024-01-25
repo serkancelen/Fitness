@@ -5,7 +5,7 @@ using Fitness.Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
-namespace Fitness.Controllers
+namespace Fitness.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
