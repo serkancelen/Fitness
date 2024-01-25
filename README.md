@@ -27,6 +27,7 @@ The Fitness Tracker Project is designed to help individuals manage their nutriti
 - Microsoft.EntityFrameworkCore.Tools (7.0.14)
 - Swashbuckle.AspNetCore (6.5.0)
 - Swashbuckle.AspNetCore.Filters (7.0.12)
+- Serilog AspNetCore (7.0.0)
 
 ## Contact
 For any questions, suggestions, or feedback related to the this project, feel free to contact me:
