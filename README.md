@@ -14,7 +14,7 @@ The Fitness Tracker Project is designed to help individuals manage their nutriti
 
 ## Project Structure
 
-- ![Ekran görüntüsü 2024-01-25 084613](https://github.com/serkancelen/Fitness/assets/139682589/23606f03-926a-490c-b20a-6aef85d6e517)
+![Ekran görüntüsü 2024-01-25 084613](https://github.com/serkancelen/Fitness/assets/139682589/23606f03-926a-490c-b20a-6aef85d6e517)
 
 ## NuGet Packages
 
