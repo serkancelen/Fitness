@@ -8,6 +8,8 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
 using Serilog;
+using Microsoft.AspNetCore.Mvc;
+using AspNetCoreRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +20,15 @@ builder.Configuration.AddJsonFile("appsettings.json");
 builder.Services.AddDbContext<FitnessDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllers()
-    .AddApplicationPart(typeof(Fitness.Presentation.AssemblyReferance).Assembly);
+builder.Services.AddControllers(options =>
+{
+    options.CacheProfiles.Add("5mins", new CacheProfile
+    {
+        Duration = 300,  
+        Location = ResponseCacheLocation.Client,  
+    });
+})
+.AddApplicationPart(typeof(Fitness.Presentation.AssemblyReferance).Assembly);
 
 
 // Swagger/OpenAPI konfigürasyonu
@@ -40,6 +49,29 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/myBeautifulLog-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
+builder.Services.AddResponseCaching();
+builder.Services.AddHttpCacheHeaders();
+builder.Services.AddMemoryCache();
+
+var rateLimitRules = new List<RateLimitRule>
+{
+    new RateLimitRule
+    {
+        Endpoint = "*",
+        Limit = 3,
+        Period = "1m"
+    }
+};
+
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.GeneralRules = rateLimitRules;
+});
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+builder.Services.AddHttpContextAccessor();
 
 // AutoMapper konfigürasyonu
 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(AutoMapperProfile).Assembly);
@@ -76,6 +108,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseIpRateLimiting();
+
+app.UseCors("CorsPolicy");
+app.UseResponseCaching();
+app.UseHttpCacheHeaders();
 
 app.UseAuthentication();
 

@@ -10,6 +10,7 @@ namespace Fitness.Presentation.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [ResponseCache(CacheProfileName = "5mins")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

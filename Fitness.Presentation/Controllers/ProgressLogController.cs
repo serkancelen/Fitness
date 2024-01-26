@@ -8,6 +8,7 @@ using Serilog;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
+[ResponseCache(CacheProfileName = "5mins")]
 public class ProgressLogController : ControllerBase
 {
     private readonly IProgressLogService _progressLogService;
