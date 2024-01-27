@@ -10,6 +10,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Serilog;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCoreRateLimit;
+using Fitness.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,26 +53,9 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.AddResponseCaching();
 builder.Services.AddHttpCacheHeaders();
 builder.Services.AddMemoryCache();
-
-var rateLimitRules = new List<RateLimitRule>
-{
-    new RateLimitRule
-    {
-        Endpoint = "*",
-        Limit = 3,
-        Period = "1m"
-    }
-};
-
-builder.Services.Configure<IpRateLimitOptions>(options =>
-{
-    options.GeneralRules = rateLimitRules;
-});
-builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+builder.Services.ConfigureRateLimitingOptions();
 builder.Services.AddHttpContextAccessor();
+builder.Services.ConfigureResponseCaching();
 
 // AutoMapper konfigürasyonu
 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(AutoMapperProfile).Assembly);

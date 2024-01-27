@@ -63,7 +63,10 @@ namespace Fitness.Services.Services
             try
             {
                 var userId = GetUserId();
-                var dbUsers = await _context.Users.Where(u => u.Id == userId).ToListAsync();
+                var dbUsers = await _context.Users
+                    .Where(u => u.Id == userId)
+                    .Include(u =>u.ProgressLogs)
+                    .ToListAsync();
 
                 response.Data = dbUsers.Select(x => _mapper.Map<GetUserDto>(x)).ToList();
             }
