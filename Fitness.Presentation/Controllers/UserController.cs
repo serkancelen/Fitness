@@ -41,9 +41,9 @@ namespace Fitness.Presentation.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<GetUserDto>>> UpdateUser(UpdateUserDto updatedUser)
+        public async Task<ActionResult<ServiceResponse<GetUserDto>>> UpdateUser(UpdateUserDto updatedUser, string newPassword)
         {
-            var response = await _userService.UpdateUser(updatedUser);
+            var response = await _userService.UpdateUser(updatedUser, newPassword);
             if (response.Data == null)
             {
                 return NotFound(response);

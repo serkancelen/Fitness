@@ -106,7 +106,7 @@ namespace Fitness.Services.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<UpdateUserDto>> UpdateUser(UpdateUserDto updatedUser)
+        public async Task<ServiceResponse<UpdateUserDto>> UpdateUser(UpdateUserDto updatedUser, string newPassword)
         {
             ServiceResponse<UpdateUserDto> serviceResponse = new ServiceResponse<UpdateUserDto>();
             try
@@ -121,13 +121,25 @@ namespace Fitness.Services.Services
                     return serviceResponse;
                 }
 
-                // Sadece kullanıcı kendi verilerini güncelleyebilir
                 if (user.Id != userId)
                 {
                     serviceResponse.Success = false;
                     serviceResponse.Message = "Bu işlem için yetkiniz yok.";
                     return serviceResponse;
                 }
+
+                if (!string.IsNullOrWhiteSpace(newPassword))
+                {
+                    CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+                    user.PasswordHash = passwordHash;
+                    user.PasswordSalt = passwordSalt;
+                }
+
+                user.UserName = updatedUser.Username;
+                user.PhoneNumber = updatedUser.PhoneNumber;
+                user.Email = updatedUser.Email;
+                user.FullName = updatedUser.FullName;
 
                 await _context.SaveChangesAsync();
                 serviceResponse.Data = _mapper.Map<UpdateUserDto>(user);
@@ -139,6 +151,7 @@ namespace Fitness.Services.Services
             }
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse<List<User>>> GetAllUsersWithProgressLogs()
         {

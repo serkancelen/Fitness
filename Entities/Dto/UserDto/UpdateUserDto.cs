@@ -7,7 +7,6 @@ namespace Fitness.Entities.Dto
     {
         public int Id { get; set; }
         public string Username { get; set; }
-        public string  NewPassword { get; set; }
         public string FullName { get; set; }
         public DateTime Birthdate { get; set; }
         public string Email { get; set; }
