@@ -1,16 +1,15 @@
+using AspNetCoreRateLimit;
 using Fitness.DataAccess;
+using Fitness.Extensions;
 using Fitness.Services;
 using Fitness.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-using Swashbuckle.AspNetCore.Filters;
 using Serilog;
-using Microsoft.AspNetCore.Mvc;
-using AspNetCoreRateLimit;
-using Fitness.Extensions;
+using Swashbuckle.AspNetCore.Filters;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json");
 
 // Veritabaný baðlantýsý ve diðer servisler
-builder.Services.AddDbContext<FitnessDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddControllers(options =>
 {
     options.CacheProfiles.Add("5mins", new CacheProfile
