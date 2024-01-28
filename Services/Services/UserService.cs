@@ -3,6 +3,7 @@ using Fitness.DataAccess;
 using Fitness.Entities;
 using Fitness.Entities.Dto;
 using Fitness.Entities.Models;
+using Fitness.Entities.RequestFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -57,7 +58,7 @@ namespace Fitness.Services.Services
             }
             return response;
         }
-        public async Task<ServiceResponse<List<GetUserDto>>> GetAllUser()
+        public async Task<ServiceResponse<List<GetUserDto>>> GetAllUser(FitnessParameters fitnessParameters)
         {
             var response = new ServiceResponse<List<GetUserDto>>();
             try

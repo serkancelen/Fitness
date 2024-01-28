@@ -3,6 +3,7 @@ using Fitness.DataAccess;
 using Fitness.Entities;
 using Fitness.Entities.Dto;
 using Fitness.Entities.Models;
+using Fitness.Entities.RequestFeatures;
 using Fitness.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ public class NutritionService : INutritionService
     private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
             .FindFirstValue(ClaimTypes.NameIdentifier));
 
-    public async Task<ServiceResponse<List<NutritionDto>>> GetNutritionByUserIdAsync(int userId)
+    public async Task<ServiceResponse<List<NutritionDto>>> GetNutritionByUserIdAsync(FitnessParameters fitnessParameters,int userId)
     {
         var response = new ServiceResponse<List<NutritionDto>>();
 

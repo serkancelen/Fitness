@@ -1,8 +1,7 @@
 ﻿using Fitness.Entities;
 using Fitness.Entities.Dto;
-using System.Collections.Generic;
+using Fitness.Entities.RequestFeatures;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Fitness.Services
 {

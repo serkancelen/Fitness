@@ -1,4 +1,5 @@
 ﻿using Fitness.Entities.Dto;
+using Fitness.Entities.RequestFeatures;
 using Fitness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,9 @@ public class NutritionController : ControllerBase
     }
 
     [HttpGet("get/{userId}")]
-    public async Task<IActionResult> GetNutritionEntries(int userId)
+    public async Task<IActionResult> GetNutritionEntries([FromQuery]FitnessParameters fitnessParameters,int userId)
     {
-        var response = await _nutritionService.GetNutritionByUserIdAsync(userId);
+        var response = await _nutritionService.GetNutritionByUserIdAsync(fitnessParameters,userId);
         if (response.Success)
         {
             return Ok(response.Data);

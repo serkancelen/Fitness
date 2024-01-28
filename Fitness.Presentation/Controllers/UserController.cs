@@ -1,5 +1,6 @@
 ﻿using Fitness.Entities;
 using Fitness.Entities.Dto;
+using Fitness.Entities.RequestFeatures;
 using Fitness.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +22,10 @@ namespace Fitness.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers()
+        public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers([FromQuery]FitnessParameters fitnessParameters)
         {
             Log.Information("GetAllUsers method called.");
-            return Ok(await _userService.GetAllUser());
+            return Ok(await _userService.GetAllUser(fitnessParameters));
         }
 
         [HttpGet("{id}")]

@@ -3,6 +3,7 @@ using Fitness.DataAccess;
 using Fitness.Entities;
 using Fitness.Entities.Dto;
 using Fitness.Entities.Models;
+using Fitness.Entities.RequestFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
