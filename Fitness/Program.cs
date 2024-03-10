@@ -3,13 +3,10 @@ using Fitness.DataAccess;
 using Fitness.Extensions;
 using Fitness.Services;
 using Fitness.Services.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,30 +50,11 @@ builder.Services.AddMemoryCache();
 builder.Services.ConfigureRateLimitingOptions();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureResponseCaching();
+builder.Services.AddCustomAuthentication(builder.Configuration);
+builder.Services.ConfigureServiceRegistration();
 
 // AutoMapper konfigürasyonu
 builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(AutoMapperProfile).Assembly);
-
-// DI (Dependency Injection) konfigürasyonlarý
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IExerciseService, ExerciseService>();
-builder.Services.AddScoped<INutritionService, NutritionService>();
-builder.Services.AddScoped<IProgressLogService, ProgressLogService>();
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<IWorkoutService, WorkoutService>();
-builder.Services.AddScoped<IFoodItemService, FoodItemService>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-            .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
 
 builder.Services.AddHttpContextAccessor();
 
